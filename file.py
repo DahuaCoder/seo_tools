@@ -10,10 +10,9 @@ def get_lines_from_file(file_name):
     pretty_lines = []
 
     for line in lines:
-        pretty_lines.append(make_str_pretty(lines))
+        pretty_lines.append(make_str_pretty(line))
 
     return pretty_lines
-
 
 
 def make_str_pretty(str_input):
