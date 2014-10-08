@@ -21,8 +21,10 @@ class WebPage(object):
         """Returns webpage's meta description"""
         soup_meta_desc = self.soup.findAll('meta',
                                            attrs={"name": "description"})
-        descr_content = soup_meta_desc[0]['content']
-        return descr_content
+        if soup_meta_desc:
+            return soup_meta_desc[0]['content']
+        else:
+            return None
 
     def get_title_tag(self):
         """Returns web page's title tag"""
