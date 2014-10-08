@@ -1,15 +1,33 @@
 #!/usr/bin/env python3
 
+import file
 import sys
 from bs4 import BeautifulSoup
 
 
 class WebPage(object):
-    def __init__(self, url, soup):
+    def __init__(self, url):
         self.url = url
+        self.comment = None
+
+    def setup_from_soup(self, soup):
+        """Reads all required data from BeautifulSoup object and initializes web
+        page"""
         if not isinstance(soup, BeautifulSoup):
             raise TypeError("bar must be set to an integer")
-        self.soup = soup
+        self.title_tag = soup.title.string
+        self.meta_description = None
+        soup_meta_desc = soup.findAll('meta',
+                                      attrs={"name": "description"})
+        if soup_meta_desc:
+            self.meta_description = soup_meta_desc[0]['content']
+
+        self.h1_headers = soup.find_all('h1')
+        self.h2_headers = soup.find_all('h2')
+        self.h3_headers = soup.find_all('h3')
+        self.h4_headers = soup.find_all('h4')
+        self.h5_headers = soup.find_all('h5')
+        self.h6_headers = soup.find_all('h6')
 
     def get_numbers_of_headers(self):
         """Returns a 6 fold tuple with the numbers of h1 - 6h headers"""
@@ -17,42 +35,68 @@ class WebPage(object):
                 len(self.h3_headers), len(self.h4_headers),
                 len(self.h5_headers), len(self.h6_headers))
 
-    def get_meta_description(self):
-        """Returns webpage's meta description"""
-        soup_meta_desc = self.soup.findAll('meta',
-                                           attrs={"name": "description"})
-        if soup_meta_desc:
-            return soup_meta_desc[0]['content']
+    def has_title(self):
+        """Returns true if web page has a title tag"""
+        if self.title_tag:
+            return True
         else:
-            return None
+            return False
 
-    def get_title_tag(self):
-        """Returns web page's title tag"""
-        return self.soup.title.string
+    def has_description(self):
+        """Return true if web page has a meta description"""
+        if self.meta_description:
+            return True
+        else:
+            return False
 
-    def get_h1_headers(self):
-        """Returns all h1 html headers"""
-        return self.soup.find_all('h1')
+    def get_printable_list(self, config):
+        """Returns a list containing all the data specified by config in a
+        printable format"""
+        print_data = []
+        if 'title' in config:
+            print_data.append(self.title_tag)
+        if 'description' in config:
+            print_data.append(self.meta_description)
+        if 'h1' in config:
+            print_data.append(self.h1_headers)
+        if 'h2' in config:
+            print_data.append(self.h2_headers)
+        if 'h3' in config:
+            print_data.append(self.h3_headers)
+        if 'h4' in config:
+            print_data.append(self.h4_headers)
+        if 'h5' in config:
+            print_data.append(self.h5_headers)
+        if 'h6' in config:
+            print_data.append(self.h6_headers)
+        if 'url' in config:
+            print_data.append(self.url)
+        if 'comment' in config:
+            print_data.append(self.comment)
 
-    def get_h2_headers(self):
-        """Returns all h2 html headers"""
-        return self.soup.find_all('h2')
+        return print_data
 
-    def get_h3_headers(self):
-        """Returns all h3 html headers"""
-        return self.soup.find_all('h3')
+    def prettify_data(self):
+        """Prettifies all data, i.e. removes all newlines, tabs and spaces at
+        end and beginning of data."""
+        self.title_tag = file.prettify_str(self.title_tag)
+        self.meta_description = file.prettify_str(self.meta_description)
 
-    def get_h4_headers(self):
-        """Returns all h4 html headers"""
-        return self.soup.find_all('h4')
+        # TODO: When headers are available in text format also prettify
+        # html headers
+        # self.h1_headers = file.prettify_str_list(self.h1_headers)
+        # self.h2_headers = file.prettify_str_list(self.h2_headers)
+        # self.h3_headers = file.prettify_str_list(self.h3_headers)
+        # self.h4_headers = file.prettify_str_list(self.h4_headers)
+        # self.h5_headers = file.prettify_str_list(self.h5_headers)
+        # self.h6_headers = file.prettify_str_list(self.h6_headers)
 
-    def get_h5_headers(self):
-        """Returns all h5 html headers"""
-        return self.soup.find_all('h5')
-
-    def get_h6_headers(self):
-        """Returns all h6 html headers"""
-        return self.soup.find_all('h6')
+    def add_comment(self, comment):
+        """Adds a comment"""
+        if self.comment:
+            self.comment = self.comment + '\n' + comment
+        else:
+            self.comment = comment
 
 
 def main():
