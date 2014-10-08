@@ -10,12 +10,12 @@ def get_lines_from_file(file_name):
     pretty_lines = []
 
     for line in lines:
-        pretty_lines.append(make_str_pretty(line))
+        pretty_lines.append(prettify_str(line))
 
     return pretty_lines
 
 
-def make_str_pretty(str_input):
+def prettify_str(str_input):
     if str_input:
         str_pretty = str_input.replace('\n', ' ')
         str_pretty = str_pretty.replace('\r', ' ')
@@ -25,6 +25,14 @@ def make_str_pretty(str_input):
         str_pretty = str_input
 
     return str_pretty
+
+
+def prettify_str_list(list_input):
+    pretty_list = []
+    for str_input in list_input:
+        pretty_list.append(prettify_str(str_input))
+
+    return pretty_list
 
 
 def main():
