@@ -5,6 +5,7 @@ import web_pages
 import utility
 import argparse
 import sys
+import csv
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
@@ -37,7 +38,7 @@ def main():
         # MataDataChecker.prettify_webpage_data()
         pass
 
-    # MeatDataChecker.write_webpage_data_file()
+    webpage_checker.write_webpage_data_file()
 
     return 0
 
@@ -46,6 +47,7 @@ class MetaDataChecker(object):
     def __init__(self, urls):
         self.urls = urls
         self.pages = []
+        self.headers = ['Title Tags', 'Meta Descriptions', 'URLs']
 
     def gather_webpage_data(self):
         """Gathers data of all web pages specified in the url list"""
@@ -53,15 +55,22 @@ class MetaDataChecker(object):
         for url in self.urls:
             utility.show_progress()
             page = urlopen(url).read()
-            web_page = web_pages.WebPage(BeautifulSoup(page))
+            web_page = web_pages.WebPage(url, soup=BeautifulSoup(page))
             page_data = []
             page_data.append(web_page.get_title_tag())
             page_data.append(web_page.get_meta_description())
             page_data.append(url)
             self.pages.append(page_data)
 
-            print('')
-            print("All data received!")
+        print('')
+        print("All data received!")
+
+    def write_webpage_data_file(self, file_name='output.csv'):
+        """Writes all gathered web page datas into a csv file"""
+        with open(file_name, 'w', encoding="utf-8") as file:
+            writer = csv.writer(file, delimiter=';')
+            writer.writerow(self.headers)
+            writer.writerows(self.pages)
 
 
 if __name__ == '__main__':
