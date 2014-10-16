@@ -24,11 +24,18 @@ def main():
                         help='Flag to indicate whether data should be\
                         prettified, i.e. Removes all newlines, tabs, returns\
                         and spaces at beginning and ending of data.')
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='Flag to indicate whether additional information\
+                        should be printed')
 
     args = parser.parse_args()
     urls = file.get_lines_from_file(args.input_file)
     webpage_checker = MetaDataChecker(urls)
     webpage_checker.gather_webpage_data()
+
+    is_verbose = False
+    if args.verbose:
+        is_verbose = True
 
     if args.check:
         webpage_checker.check_webpage_data()
@@ -36,7 +43,7 @@ def main():
     if args.pretty:
         webpage_checker.prettify_webpage_data()
 
-    webpage_checker.write_webpage_data_file()
+    webpage_checker.write_webpage_data_file(is_verbose)
 
     return 0
 
@@ -63,13 +70,13 @@ class MetaDataChecker(object):
         print('')
         print("All data received!")
 
-    def write_webpage_data_file(self, file_name='output.csv'):
+    def write_webpage_data_file(self, with_comments, file_name='output.csv'):
         """Writes all gathered web page datas into a csv file"""
         with open(file_name, 'w', encoding="utf-8") as file:
             writer = csv.writer(file, delimiter=';')
             writer.writerow(self.headers)
             for web_page in self.pages:
-                writer.writerow(web_page.get_printable_meta_data())
+                writer.writerow(web_page.get_printable_meta_data(with_comments))
 
     def prettify_webpage_data(self):
         """Prettifies data of web pages, i.e. removes newlines, tabs and spaces\

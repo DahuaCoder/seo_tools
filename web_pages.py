@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 class WebPage(object):
     def __init__(self, url):
         self.url = url
-        self.comment = None
+        self.comment = []
 
     def setup_from_soup(self, soup):
         """Reads all required data from BeautifulSoup object and initializes web
@@ -43,28 +43,33 @@ class WebPage(object):
         else:
             return False
 
-    def get_printable_meta_data(self):
+    def get_printable_meta_data(self, is_verbose=False):
         """Returns a list containing all the meta data, url and comment in a
         printable format"""
-        print_data = [self.title_tag, self.meta_description, self.url,
-                      self.comment]
+        print_data = [self.title_tag, self.meta_description, self.url]
+        if is_verbose:
+            print_data += self.comment
         return print_data
 
-    def get_printable_html_headers(self):
+    def get_printable_html_headers(self, is_verbose=False):
         """Returns a list containing all the html headers, url and comment in a
         printable format"""
         print_data = [self.h1_headers, self.h2_headers, self.h3_headers,
                       self.h4_headers, self.h5_headers, self.h6_headers,
-                      self.url, self.comment]
+                      self.url]
+        if is_verbose:
+            print_data += self.comment
         return print_data
 
-    def get_printable_header_numbers(self):
+    def get_printable_header_numbers(self, is_verbose=False):
         """Returns a list containing all the numbers of html headers, url and
         comment in a printable format"""
         print_data = [len(self.h1_headers), len(self.h2_headers),
                       len(self.h3_headers), len(self.h4_headers),
                       len(self.h5_headers), len(self.h6_headers),
-                      self.url, self.comment]
+                      self.url]
+        if is_verbose:
+            print_data += self.comment
         return print_data
 
     def prettify_data(self):
@@ -82,10 +87,7 @@ class WebPage(object):
 
     def add_comment(self, comment):
         """Adds a comment"""
-        if self.comment:
-            self.comment = self.comment + '\n' + comment
-        else:
-            self.comment = comment
+        self.comment.append(comment)
 
     def _get_html_headers(self, soup, header_type):
         headers_list = soup.find_all(header_type)
