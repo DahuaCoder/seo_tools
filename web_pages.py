@@ -29,12 +29,6 @@ class WebPage(object):
         self.h5_headers = self._get_html_headers(soup, 'h5')
         self.h6_headers = self._get_html_headers(soup, 'h6')
 
-    def get_numbers_of_headers(self):
-        """Returns a 6 fold tuple with the numbers of h1 - 6h headers"""
-        return (len(self.h1_headers), len(self.h2_headers),
-                len(self.h3_headers), len(self.h4_headers),
-                len(self.h5_headers), len(self.h6_headers))
-
     def has_title(self):
         """Returns true if web page has a title tag"""
         if self.title_tag:
@@ -49,31 +43,28 @@ class WebPage(object):
         else:
             return False
 
-    def get_printable_list(self, config):
-        """Returns a list containing all the data specified by config in a
+    def get_printable_meta_data(self):
+        """Returns a list containing all the meta data, url and comment in a
         printable format"""
-        print_data = []
-        if 'title' in config:
-            print_data.append(self.title_tag)
-        if 'description' in config:
-            print_data.append(self.meta_description)
-        if 'h1' in config:
-            print_data.append(self.h1_headers)
-        if 'h2' in config:
-            print_data.append(self.h2_headers)
-        if 'h3' in config:
-            print_data.append(self.h3_headers)
-        if 'h4' in config:
-            print_data.append(self.h4_headers)
-        if 'h5' in config:
-            print_data.append(self.h5_headers)
-        if 'h6' in config:
-            print_data.append(self.h6_headers)
-        if 'url' in config:
-            print_data.append(self.url)
-        if 'comment' in config:
-            print_data.append(self.comment)
+        print_data = [self.title_tag, self.meta_description, self.url,
+                      self.comment]
+        return print_data
 
+    def get_printable_html_headers(self):
+        """Returns a list containing all the html headers, url and comment in a
+        printable format"""
+        print_data = [self.h1_headers, self.h2_headers, self.h3_headers,
+                      self.h4_headers, self.h5_headers, self.h6_headers,
+                      self.url, self.comment]
+        return print_data
+
+    def get_printable_header_numbers(self):
+        """Returns a list containing all the numbers of html headers, url and
+        comment in a printable format"""
+        print_data = [len(self.h1_headers), len(self.h2_headers),
+                      len(self.h3_headers), len(self.h4_headers),
+                      len(self.h5_headers), len(self.h6_headers),
+                      self.url, self.comment]
         return print_data
 
     def prettify_data(self):
@@ -82,14 +73,12 @@ class WebPage(object):
         self.title_tag = file.prettify_str(self.title_tag)
         self.meta_description = file.prettify_str(self.meta_description)
 
-        # TODO: When headers are available in text format also prettify
-        # html headers
-        # self.h1_headers = file.prettify_str_list(self.h1_headers)
-        # self.h2_headers = file.prettify_str_list(self.h2_headers)
-        # self.h3_headers = file.prettify_str_list(self.h3_headers)
-        # self.h4_headers = file.prettify_str_list(self.h4_headers)
-        # self.h5_headers = file.prettify_str_list(self.h5_headers)
-        # self.h6_headers = file.prettify_str_list(self.h6_headers)
+        self.h1_headers = file.prettify_str_list(self.h1_headers)
+        self.h2_headers = file.prettify_str_list(self.h2_headers)
+        self.h3_headers = file.prettify_str_list(self.h3_headers)
+        self.h4_headers = file.prettify_str_list(self.h4_headers)
+        self.h5_headers = file.prettify_str_list(self.h5_headers)
+        self.h6_headers = file.prettify_str_list(self.h6_headers)
 
     def add_comment(self, comment):
         """Adds a comment"""

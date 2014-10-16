@@ -65,12 +65,11 @@ class MetaDataChecker(object):
 
     def write_webpage_data_file(self, file_name='output.csv'):
         """Writes all gathered web page datas into a csv file"""
-        config = ['title', 'description', 'url', 'comment']
         with open(file_name, 'w', encoding="utf-8") as file:
             writer = csv.writer(file, delimiter=';')
             writer.writerow(self.headers)
             for web_page in self.pages:
-                writer.writerow(web_page.get_printable_list(config))
+                writer.writerow(web_page.get_printable_meta_data())
 
     def prettify_webpage_data(self):
         """Prettifies data of web pages, i.e. removes newlines, tabs and spaces\
