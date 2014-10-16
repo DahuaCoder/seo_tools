@@ -31,13 +31,13 @@ def main():
     webpage_checker = HeaderChecker(urls)
     webpage_checker.gather_webpage_data()
 
-    if args.count:
-        webpage_checker.check_webpage_data()
-
     if args.pretty:
         webpage_checker.prettify_webpage_data()
 
-    webpage_checker.write_webpage_data_file()
+    if args.count:
+        webpage_checker.write_numbers_of_headers_file()
+    else:
+        webpage_checker.write_webpage_data_file()
 
     return 0
 
@@ -61,14 +61,21 @@ class HeaderChecker(object):
         print('')
         print("All data received!")
 
-    def write_webpage_data_file(self, file_name='output.csv'):
+    def write_webpage_data_file(self, file_name='headers.csv'):
         """Writes all gathered web page datas into a csv file"""
-        config = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'url', 'comment']
         with open(file_name, 'w', encoding="utf-8") as file:
             writer = csv.writer(file, delimiter=';')
             writer.writerow(self.headers)
             for web_page in self.pages:
-                writer.writerow(web_page.get_printable_list(config))
+                writer.writerow(web_page.get_printable_html_headers())
+
+    def write_numbers_of_headers_file(self, file_name='header_numbers.csv'):
+        """Counts h1 - h6 headers on the web pages"""
+        with open(file_name, 'w', encoding="utf-8") as file:
+            writer = csv.writer(file, delimiter=';')
+            writer.writerow(self.headers)
+            for web_page in self.pages:
+                writer.writerow(web_page.get_printable_header_numbers())
 
     def prettify_webpage_data(self):
         """Prettifies data of web pages, i.e. removes newlines, tabs and spaces\
