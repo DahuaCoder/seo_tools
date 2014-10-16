@@ -22,12 +22,12 @@ class WebPage(object):
         if soup_meta_desc:
             self.meta_description = soup_meta_desc[0]['content']
 
-        self.h1_headers = soup.find_all('h1')
-        self.h2_headers = soup.find_all('h2')
-        self.h3_headers = soup.find_all('h3')
-        self.h4_headers = soup.find_all('h4')
-        self.h5_headers = soup.find_all('h5')
-        self.h6_headers = soup.find_all('h6')
+        self.h1_headers = self._get_html_headers(soup, 'h1')
+        self.h2_headers = self._get_html_headers(soup, 'h2')
+        self.h3_headers = self._get_html_headers(soup, 'h3')
+        self.h4_headers = self._get_html_headers(soup, 'h4')
+        self.h5_headers = self._get_html_headers(soup, 'h5')
+        self.h6_headers = self._get_html_headers(soup, 'h6')
 
     def get_numbers_of_headers(self):
         """Returns a 6 fold tuple with the numbers of h1 - 6h headers"""
@@ -97,6 +97,16 @@ class WebPage(object):
             self.comment = self.comment + '\n' + comment
         else:
             self.comment = comment
+
+    def _get_html_headers(self, soup, header_type):
+        headers_list = soup.find_all(header_type)
+        ret_headers = []
+        for header in headers_list:
+            if header.find('a'):
+                comment = "%s headers contain Links" % header_type
+                self.add_comment(comment)
+            ret_headers.append(header.text)
+        return ret_headers
 
 
 def main():
