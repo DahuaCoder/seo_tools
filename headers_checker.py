@@ -31,7 +31,7 @@ def main():
     webpage_checker = HeaderChecker(urls)
     webpage_checker.gather_webpage_data()
 
-    if args.check:
+    if args.count:
         webpage_checker.check_webpage_data()
 
     if args.pretty:
@@ -63,7 +63,7 @@ class HeaderChecker(object):
 
     def write_webpage_data_file(self, file_name='output.csv'):
         """Writes all gathered web page datas into a csv file"""
-        config = ['title', 'description', 'url', 'comment']
+        config = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'url', 'comment']
         with open(file_name, 'w', encoding="utf-8") as file:
             writer = csv.writer(file, delimiter=';')
             writer.writerow(self.headers)
